@@ -27,8 +27,6 @@ Whether you're playing "Ultimate Bravery" with friends or just looking to spice 
 ### Live Demo
 View the project live here: **[https://hakanesnn.github.io/lol-random-build/](https://hakanesnn.github.io/lol-random-build/)**
 
-*(Note: Ensure GitHub Pages is enabled in your repository settings)*
-
 ### Local Installation
 1. Clone the repository:
    ```bash
@@ -51,3 +49,4 @@ View the project live here: **[https://hakanesnn.github.io/lol-random-build/](ht
 ## ⚖️ Legal
 
 This project is a fan-made tool and is not endorsed by Riot Games. It doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
+
