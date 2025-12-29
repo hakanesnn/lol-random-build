@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>LoL Random Build Generator</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Beaufort+LoL:wght@500;700&family=Inter:wght@400;600&family=Cinzel:wght@700&display=swap" rel="stylesheet" />
+		<style>
+			:root {
+				--primary-gold: #c8aa6e;
+				--primary-dark: #091428;
+				--primary-blue: #0ac8b9;
+				--glass-bg: rgba(9, 20, 40, 0.85);
+				--slot-bg: rgba(0, 0, 0, 0.5);
+				--border-gold: #785a28;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				background:
+					url('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Morgana_0.jpg') no-repeat center center fixed;
+				background-size: cover;
+				color: #f0f0f0;
+				font-family: 'Inter', sans-serif;
+				margin: 0;
+				min-height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 20px;
+				position: relative;
+			}
+
+			body::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(0, 0, 0, 0.6);
+				z-index: -1;
+			}
+
+			.container {
+				width: 100%;
+				max-width: 800px;
+				background: var(--glass-bg);
+				backdrop-filter: blur(16px);
+				-webkit-backdrop-filter: blur(16px);
+				border: 1px solid var(--border-gold);
+				border-radius: 12px;
+				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+				padding: 2rem;
+				text-align: center;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.container::after {
+				content: '';
+				position: absolute;
+				top: 5px;
+				left: 5px;
+				right: 5px;
+				bottom: 5px;
+				border: 1px solid rgba(200, 170, 110, 0.3);
+				border-radius: 8px;
+				pointer-events: none;
+			}
+
+			h1 {
+				font-family: 'Cinzel', serif;
+				color: var(--primary-gold);
+				font-size: 2.5rem;
+				margin-bottom: 2rem;
+				text-transform: uppercase;
+				text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+				letter-spacing: 2px;
+			}
+
+			#champion-card {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-bottom: 2rem;
+				animation: fadeIn 0.5s ease-out;
+			}
+
+			#champion-img {
+				width: 140px;
+				height: 140px;
+				border: 3px solid var(--primary-gold);
+				border-radius: 50%;
+				object-fit: cover;
+				box-shadow: 0 0 25px rgba(200, 170, 110, 0.4);
+				transition: transform 0.3s;
+			}
+			#champion-img:hover {
+				transform: scale(1.05);
+			}
+
+			#champion-name {
+				font-family: 'Cinzel', serif;
+				font-size: 2rem;
+				margin-top: 1rem;
+				color: #fff;
+				text-shadow: 0 2px 5px #000;
+			}
+
+			.build-grid {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 15px;
+				margin: 2rem 0;
+			}
+
+			.item-slot {
+				width: 80px;
+				height: 80px;
+				background: var(--slot-bg);
+				border: 1px solid var(--border-gold);
+				position: relative;
+				transition:
+					transform 0.2s,
+					box-shadow 0.2s;
+			}
+			.item-slot:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 5px 15px rgba(200, 170, 110, 0.3);
+				z-index: 2;
+				border-color: #f0e6d2;
+			}
+
+			.item-slot img {
+				width: 100%;
+				height: 100%;
+				display: block;
+			}
+
+			#rune-container {
+				background: rgba(0, 0, 0, 0.4);
+				padding: 20px;
+				border-radius: 8px;
+				border: 1px solid rgba(120, 90, 40, 0.5);
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 40px;
+				margin-top: 2rem;
+			}
+
+			.rune-column {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.rune-column h4 {
+				color: var(--primary-gold);
+				text-transform: uppercase;
+				letter-spacing: 1px;
+				font-size: 0.9rem;
+				margin-bottom: 1rem;
+			}
+
+			.rune-imgs {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+				align-items: center;
+			}
+			.secondary-runes {
+				margin-top: auto;
+			}
+
+			button {
+				background: linear-gradient(180deg, #1e2328 0%, #091428 100%);
+				color: var(--primary-gold);
+				border: 2px solid var(--primary-gold);
+				padding: 15px 50px;
+				font-family: 'Cinzel', serif;
+				font-size: 1.2rem;
+				font-weight: bold;
+				cursor: pointer;
+				margin-top: 2rem;
+				position: relative;
+				overflow: hidden;
+				transition: all 0.3s ease;
+				text-transform: uppercase;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+			}
+			button:hover {
+				box-shadow: 0 0 20px rgba(200, 170, 110, 0.5);
+				text-shadow: 0 0 10px rgba(200, 170, 110, 0.8);
+				background: linear-gradient(180deg, #2a3038 0%, #101c30 100%);
+			}
+			button:active {
+				transform: scale(0.98);
+			}
+
+			#spell-container {
+				display: flex;
+				justify-content: center;
+				gap: 15px;
+				margin-bottom: 2rem;
+			}
+			.spell-slot {
+				width: 50px;
+				height: 50px;
+				border: 1px solid var(--border-gold);
+				position: relative;
+				box-shadow: 0 0 10px rgba(0,0,0,0.5);
+			}
+			.spell-slot img {
+				width: 100%;
+				height: 100%;
+				display: block;
+			}
+
+			@media (max-width: 600px) {
+				body {
+					padding: 10px;
+				}
+				.container {
+					padding: 1.5rem;
+				}
+				h1 {
+					font-size: 1.8rem;
+				}
+				#champion-name {
+					font-size: 1.5rem;
+				}
+				.item-slot {
+					width: 60px;
+					height: 60px;
+				}
+				.spell-slot {
+					width: 45px;
+					height: 45px;
+				}
+				#rune-container {
+					gap: 20px;
+					flex-direction: row; 
+				}
+				@media (max-width: 400px) {
+					#rune-container {
+						flex-direction: column;
+					}
+					.secondary-runes {
+						margin-top: 0;
+					}
+				}
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>LOL Random Build</h1>
+
+			<div id="champion-card">
+				<img id="champion-img" src="" alt="Champion" style="display: none;"/>
+				<b id="champion-name">Loading...</b>
+			</div>
+
+			<div id="spell-container"></div>
+
+			<div class="build-grid" id="item-container">
+			</div>
+
+			<div id="rune-container">
+			</div>
+
+			<button onclick="generateBuild()">New Build</button>
+		</div>
+
+		<script>
+			let allChampions = [];
+			let rawItemData = {};
+			let allRunes = [];
+			let allSpells = [];
+			let VERSION = '14.1.1';
+
+			async function init() {
+				try {
+					const versionRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+					const versions = await versionRes.json();
+					VERSION = versions[0];
+					console.log('Current Patch:', VERSION);
+
+					const [champRes, itemRes, runeRes, spellRes] = await Promise.all([
+                        fetch(`https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/en_US/champion.json`),
+                        fetch(`https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/en_US/item.json`),
+                        fetch(`https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/en_US/runesReforged.json`),
+                        fetch(`https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/en_US/summoner.json`)
+                    ]);
+
+					allChampions = Object.values((await champRes.json()).data);
+					rawItemData = (await itemRes.json()).data;
+					allRunes = await runeRes.json();
+					allSpells = Object.values((await spellRes.json()).data);
+
+					generateBuild();
+                    
+                    document.getElementById('champion-img').style.display = 'block';
+
+				} catch (err) {
+					console.error('Data error:', err);
+					document.getElementById('champion-name').innerText = "Error occurred!";
+				}
+			}
+
+			function generateBuild() {
+				if (allChampions.length === 0) return;
+
+				const champ = allChampions[Math.floor(Math.random() * allChampions.length)];
+				
+                document.getElementById('champion-img').src = `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${champ.image.full}`;
+				document.getElementById('champion-name').innerText = champ.name;
+
+				generateSpells();
+
+				const allItemsArray = Object.values(rawItemData);
+
+				const isValidRiftItem = (item) => {
+					if (!item.maps['11']) return false;
+					if (!item.gold.purchasable) return false;
+					if (item.inStore === false) return false;
+					
+					if (item.requiredChampion) return false; 
+					if (item.requiredAlly) return false;
+
+					if (item.description) {
+						const desc = item.description;
+						if (desc.includes('Quest:') || 
+							desc.includes('<prismatic>') || 
+							desc.includes('Augment') ||
+							desc.includes('Arena') ||
+                            desc.includes('Perks') ||
+                            desc.includes('perTakedown')
+                        ) return false;
+					}
+
+					if (item.gold.total > 1600 && (!item.from || item.from.length === 0)) {
+						return false;
+					}
+
+					return true;
+				};
+
+				const bootPool = allItemsArray.filter((item) => 
+					item.tags.includes('Boots') && 
+					item.gold.total >= 900 && 
+					isValidRiftItem(item)
+				);
+
+				const regularItemPool = allItemsArray.filter((item) => 
+					!item.tags.includes('Boots') && 
+					item.gold.total >= 2000 && 
+					isValidRiftItem(item)
+				);
+
+				let finalBuild = [];
+
+				if(bootPool.length > 0) {
+                    const randomBoot = bootPool[Math.floor(Math.random() * bootPool.length)];
+				    finalBuild.push(randomBoot);
+                }
+
+				let tempPool = [...regularItemPool];
+				for (let i = 0; i < 5; i++) {
+                    if(tempPool.length === 0) break;
+					const randomIndex = Math.floor(Math.random() * tempPool.length);
+					finalBuild.push(tempPool[randomIndex]);
+					tempPool.splice(randomIndex, 1);
+				}
+
+				finalBuild.sort(() => Math.random() - 0.5);
+
+				const container = document.getElementById('item-container');
+				container.innerHTML = '';
+
+				finalBuild.forEach((item) => {
+					const slot = document.createElement('div');
+					slot.className = 'item-slot';
+					slot.innerHTML = `<img src="https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/item/${item.image.full}" alt="${item.name}" title="${item.name}">`;
+					container.appendChild(slot);
+				});
+
+				generateRunes();
+			}
+
+			function generateSpells() {
+				const validSpells = allSpells.filter(spell => {
+					return spell.modes.includes("CLASSIC") && spell.name !== "To the King!";
+				});
+
+				if (validSpells.length < 2) return;
+
+				const spell1Index = Math.floor(Math.random() * validSpells.length);
+				let spell2Index;
+				do {
+					spell2Index = Math.floor(Math.random() * validSpells.length);
+				} while (spell1Index === spell2Index);
+
+				const spell1 = validSpells[spell1Index];
+				const spell2 = validSpells[spell2Index];
+
+				const spellContainer = document.getElementById('spell-container');
+				spellContainer.innerHTML = `
+					<div class="spell-slot" title="${spell1.name}">
+						<img src="https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/spell/${spell1.image.full}">
+					</div>
+					<div class="spell-slot" title="${spell2.name}">
+						<img src="https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/spell/${spell2.image.full}">
+					</div>
+				`;
+			}
+
+			function generateRunes() {
+				if (!allRunes || allRunes.length === 0) return;
+
+				const primaryPath = allRunes[Math.floor(Math.random() * allRunes.length)];
+				let secondaryPath;
+				do {
+					secondaryPath = allRunes[Math.floor(Math.random() * allRunes.length)];
+				} while (secondaryPath.id === primaryPath.id);
+
+				const keystone = primaryPath.slots[0].runes[Math.floor(Math.random() * primaryPath.slots[0].runes.length)];
+				const pSlot1 = primaryPath.slots[1].runes[Math.floor(Math.random() * primaryPath.slots[1].runes.length)];
+				const pSlot2 = primaryPath.slots[2].runes[Math.floor(Math.random() * primaryPath.slots[2].runes.length)];
+				const pSlot3 = primaryPath.slots[3].runes[Math.floor(Math.random() * primaryPath.slots[3].runes.length)];
+
+				const availableSlots = [1, 2, 3];
+				const chosenSlots = availableSlots.sort(() => 0.5 - Math.random()).slice(0, 2);
+
+				const sRune1 = secondaryPath.slots[chosenSlots[0]].runes[Math.floor(Math.random() * secondaryPath.slots[chosenSlots[0]].runes.length)];
+				const sRune2 = secondaryPath.slots[chosenSlots[1]].runes[Math.floor(Math.random() * secondaryPath.slots[chosenSlots[1]].runes.length)];
+
+				const statRows = [
+					['StatModsAdaptiveForceIcon.png', 'StatModsAttackSpeedIcon.png', 'StatModsCDRScalingIcon.png'],
+					['StatModsAdaptiveForceIcon.png', 'StatModsArmorIcon.png', 'StatModsMagicResIcon.png'],
+					['StatModsHealthScalingIcon.png', 'StatModsArmorIcon.png', 'StatModsMagicResIcon.png']
+				];
+
+				const selectedStats = statRows.map(row => row[Math.floor(Math.random() * row.length)]);
+
+				const runeUI = document.getElementById('rune-container');
+				runeUI.innerHTML = `
+					<div style="display:flex; gap:40px; align-items:flex-start;">
+						<div class="rune-column">
+							<h4>${primaryPath.name}</h4>
+							<div class="rune-imgs">
+								<img src="https://ddragon.leagueoflegends.com/cdn/img/${keystone.icon}" width="60" style="border: 2px solid var(--primary-gold); border-radius: 50%; padding: 2px; box-shadow: 0 0 10px var(--primary-gold);" title="${keystone.name}">
+								<img src="https://ddragon.leagueoflegends.com/cdn/img/${pSlot1.icon}" width="40" title="${pSlot1.name}">
+								<img src="https://ddragon.leagueoflegends.com/cdn/img/${pSlot2.icon}" width="40" title="${pSlot2.name}">
+								<img src="https://ddragon.leagueoflegends.com/cdn/img/${pSlot3.icon}" width="40" title="${pSlot3.name}">
+							</div>
+						</div>
+						<div class="rune-column secondary-runes">
+							<h4>${secondaryPath.name}</h4>
+							<div class="rune-imgs">
+								<img src="https://ddragon.leagueoflegends.com/cdn/img/${sRune1.icon}" width="40" title="${sRune1.name}">
+								<img src="https://ddragon.leagueoflegends.com/cdn/img/${sRune2.icon}" width="40" title="${sRune2.name}">
+								
+								<div style="margin-top: 15px; border-top: 1px solid rgba(200,170,110,0.3); padding-top: 10px; display:flex; flex-direction:column; gap:5px; align-items:center;">
+									${selectedStats.map(img => 
+										`<img src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/${img}" width="25" style="border: 1px solid #5a5a5a; border-radius: 50%; background: #000;">`
+									).join('')}
+								</div>
+							</div>
+						</div>
+					</div>
+                `;
+			}
+
+			init();
+		</script>
+	</body>
+</html>
